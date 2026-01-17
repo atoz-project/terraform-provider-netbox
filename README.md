@@ -1,5 +1,16 @@
 # terraform-provider-netbox
 
+> **Fork Notice**: This is a fork of [e-breuninger/terraform-provider-netbox](https://github.com/e-breuninger/terraform-provider-netbox) with added support for **NetBox 4.5**.
+>
+> **Changes in this fork:**
+> - Added support for NetBox 4.4.x and 4.5.x versions
+> - Added support for NetBox v2 Bearer Token authentication format (`nbt_<KEY>.<TOKEN>`)
+> - Updated `netbox_token` resource to support creating v2 tokens
+>
+> **Original repository**: https://github.com/e-breuninger/terraform-provider-netbox
+
+---
+
 The Terraform Netbox provider is a plugin for Terraform that allows for the full lifecycle management of [Netbox](https://netboxlabs.com/docs/netbox/) resources.
 This provider is maintained by E. Breuninger.
 
@@ -17,7 +28,8 @@ Since version [1.6.6](https://github.com/e-breuninger/terraform-provider-netbox/
 
 | Netbox version  | Provider version |
 | --------------- | ---------------- |
-| v4.3.0 - 4.4.0  | v5.0.0 and up    |
+| v4.4.0 - 4.5.x  | v5.1.0 and up    |
+| v4.3.0 - 4.4.0  | v5.0.0 - v5.0.x  |
 | v4.2.2 - 4.2.9  | v4.0.0 - 4.3.1   |
 | v4.1.0 - 4.1.11 | v3.10.0 - 3.11.1 |
 | v4.0.0 - 4.0.11 | v3.9.0 - 3.9.2   |

@@ -13,7 +13,18 @@ From the [official documentation](https://docs.netbox.dev/en/stable/rest-api/aut
 
 > A token is a unique identifier mapped to a NetBox user account. Each user may have one or more tokens which he or she can use for authentication when making REST API requests. To create a token, navigate to the API tokens page under your user profile.
 
+## NetBox 4.5+ Token Versions
+
+Starting with NetBox 4.5, two token formats are supported:
+
+- **v1 tokens**: Legacy 40-character tokens. You can specify the `key` directly.
+- **v2 tokens**: New format (`nbt_<KEY>.<SECRET>`). Leave `key` empty to let NetBox generate a v2 token.
+
+**Important**: For v2 tokens, the full token plaintext is only shown once at creation time in the NetBox UI. Terraform will only receive the public key portion (`nbt_<KEY>`), not the full secret.
+
 ## Example Usage
+
+### v1 Token (Legacy)
 
 ```terraform
 resource "netbox_user" "test" {
@@ -27,6 +38,22 @@ resource "netbox_token" "test_basic" {
   allowed_ips   = ["2.4.8.16/32"]
   write_enabled = false
   expires       = "2036-01-02T15:04:05.000Z"
+}
+```
+
+### v2 Token (NetBox 4.5+)
+
+```terraform
+resource "netbox_user" "test" {
+  username = "johndoe"
+  password = "Abcdefghijkl1"
+}
+
+# Leave key empty to create a v2 token
+resource "netbox_token" "v2_token" {
+  user_id       = netbox_user.test.id
+  description   = "My v2 token"
+  write_enabled = true
 }
 ```
 

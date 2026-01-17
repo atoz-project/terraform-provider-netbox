@@ -1,4 +1,12 @@
-## 5.0.1 Ho-Ho-Ho (December 25th, 2025) 
+## 5.1.0 (Unreleased)
+
+ENHANCEMENTS
+
+* provider: Now supports NetBox 4.4.x and 4.5.x
+* provider: Add support for NetBox v2 Bearer Token authentication format (tokens starting with `nbt_`)
+* resource/netbox_token: Add support for creating v2 tokens by leaving `key` empty (NetBox 4.5+)
+
+## 5.0.1 Ho-Ho-Ho (December 25th, 2025)
 
 ENHANCEMENTS
 

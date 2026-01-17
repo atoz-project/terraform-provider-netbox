@@ -87,6 +87,47 @@ func TestAdditionalHeadersSet(t *testing.T) {
 	client.Status.StatusList(req, nil)
 }
 
+func TestV2BearerTokenFormat(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		assert.True(t, len(authHeader) > 0, "Authorization header should be set")
+		assert.Contains(t, authHeader, "Bearer nbt_", "Should use Bearer format for v2 tokens")
+	}))
+	defer ts.Close()
+
+	config := Config{
+		APIToken:  "nbt_abc123.secrettoken",
+		ServerURL: ts.URL,
+	}
+
+	client, err := config.Client()
+	assert.NoError(t, err)
+
+	req := status.NewStatusListParams()
+	client.Status.StatusList(req, nil)
+}
+
+func TestV1TokenFormat(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		assert.True(t, len(authHeader) > 0, "Authorization header should be set")
+		assert.Contains(t, authHeader, "Token ", "Should use Token format for v1 tokens")
+		assert.NotContains(t, authHeader, "Bearer", "Should not use Bearer format for v1 tokens")
+	}))
+	defer ts.Close()
+
+	config := Config{
+		APIToken:  "07b12b765127747e4afd56cb531b7bf9c61f3c30",
+		ServerURL: ts.URL,
+	}
+
+	client, err := config.Client()
+	assert.NoError(t, err)
+
+	req := status.NewStatusListParams()
+	client.Status.StatusList(req, nil)
+}
+
 /* TODO
 func TestInvalidHttpsCertificate(t *testing.T) {}
 */

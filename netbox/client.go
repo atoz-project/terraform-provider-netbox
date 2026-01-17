@@ -3,6 +3,7 @@ package netbox
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	netboxclient "github.com/fbreckle/go-netbox/netbox/client"
@@ -81,7 +82,21 @@ func (cfg *Config) Client() (*netboxclient.NetBoxAPI, error) {
 	}
 
 	transport := httptransport.NewWithClient(parsedURL.Host, parsedURL.Path+netboxclient.DefaultBasePath, desiredRuntimeClientSchemes, httpClient)
-	transport.DefaultAuthentication = httptransport.APIKeyAuth("Authorization", "header", fmt.Sprintf("Token %v", cfg.APIToken))
+
+	// Support both v1 (Token) and v2 (Bearer) authentication formats
+	// v2 tokens start with "nbt_" prefix (introduced in NetBox 4.5)
+	var authHeader string
+	if strings.HasPrefix(cfg.APIToken, "nbt_") {
+		// NetBox v2 token format: Bearer nbt_<KEY>.<TOKEN>
+		authHeader = fmt.Sprintf("Bearer %v", cfg.APIToken)
+		log.Debug("Using NetBox v2 Bearer token authentication")
+	} else {
+		// Legacy v1 token format: Token <TOKEN>
+		authHeader = fmt.Sprintf("Token %v", cfg.APIToken)
+		log.Debug("Using NetBox v1 Token authentication")
+	}
+	transport.DefaultAuthentication = httptransport.APIKeyAuth("Authorization", "header", authHeader)
+
 	transport.SetLogger(log.StandardLogger())
 	netboxClient := netboxclient.New(transport, nil)
 
